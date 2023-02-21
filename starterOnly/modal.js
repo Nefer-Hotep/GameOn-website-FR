@@ -28,123 +28,182 @@ function closeModal() {
 }
 
 // ------FORM-------
+// Inputs
+const locationInput = document.querySelectorAll(`input[name="location"]`);
+const inputs = document.querySelectorAll(
+    `input[type='text'], input[type='number'], input[type='email'], input[type='quantity'], input[type='checkbox'], input[type='date']`
+);
+
+
+// Create a function that define a template for error message
+function displayError(input, message, valid) {
+    // Display an error in a pseudo element :after
+    if (!valid) {
+        input.parentElement.setAttribute("data-error-visible", true);
+        input.parentElement.setAttribute("data-error", message);
+    } else {
+        input.parentElement.setAttribute("data-error-visible", false);
+        input.parentElement.removeAttribute("data-error");
+    }
+}
+
 // Define error variable with default value
-const formError =
-    (firstNameError =
-    lastNameError =
-    emailError =
-    birthdateError =
-    quantityError =
-    locationError =
-    checkboxError =
-        true);
+let firstNameError,
+    lastNameError,
+    emailError,
+    birthdateError,
+    quantityError,
+    locationError,
+    checkboxError;
 
-// Defining a function to validate the form
-function validate() {
-    // Retrieving the values of the form and putting it inside variables
-    let firstNameFields = firstName.value;
-    let lastNameFields = lastName.value;
-    let emailFields = email.value;
-    let birthdateFields = birthdate.value;
-    let quantityFields = quantity.value;
-    let locationFields = reserve.location.value;
-    let checkboxFields = checkbox1.checked;
+// Differents style of regex inside variables
+const nameRegex = /^[a-zA-Z0-9_.-éëèïôÿ]*$/;
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const birthdateRegex = /\d{4}-\d{2}-\d{2}/;
+const quantityRegex = /[0-9]{1,}/;
 
-    // Differents style of regex inside variables
-    const nameRegex = /^[a-zA-Z0-9_.-éëèïôÿ]*$/;
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const birthdateRegex = /\d{4}-\d{2}-\d{2}/;
-    const quantityRegex = /[1-9]{1,}/;
-
-    // Validate firstName
-    if (firstNameFields == "") {
-        console.log("Prénom vide");
+// Validate firstName
+function firstNameChecker(value) {
+    if (value == "") {
+        displayError(firstName, "Veuillez indiquer votre prénom");
         firstNameError = false;
-    } else if (firstNameFields.length < 2) {
-        console.log("Prénom moins de 2");
+    } else if (value.length < 2) {
+        displayError(
+            firstName,
+            "Veuillez entrer 2 caractères ou plus pour le champ du prénom."
+        );
         firstNameError = false;
-    } else if (nameRegex.test(firstNameFields) === false) {
-        console.log("Prénom incorrect");
+    } else if (nameRegex.test(value) === false) {
+        displayError(firstName, "Le prénom contient des caractères invalide");
         firstNameError = false;
     } else {
-        console.log("Prénom correct");
+        displayError(firstName, "", true);
         firstNameError = true;
     }
+}
 
-    // Validate lastName
-    if (lastNameFields == "") {
-        console.log("Nom vide");
+// Validate lastName
+function lastNameChecker(value) {
+    if (value == "") {
+        displayError(lastName, "Veuillez indiquer votre nom");
         lastNameError = false;
-    } else if (lastNameFields.length < 2) {
-        console.log("Nom moins de 2");
+    } else if (value.length < 2) {
+        displayError(
+            lastName,
+            "Veuillez entrer 2 caractères ou plus pour le champ du nom."
+        );
         lastNameError = false;
-    } else if (nameRegex.test(lastNameFields) === false) {
-        console.log("Nom incorrect");
+    } else if (nameRegex.test(value) === false) {
+        displayError(lastName, "Le nom contient des caractères invalide");
         lastNameError = false;
     } else {
-        console.log("Nom correct");
+        displayError(lastName, "", true);
         lastNameError = true;
     }
+}
 
-    // Validate email
-    if (emailFields == "") {
-        console.log("Email vide");
+// Validate email
+function emailChecker(value) {
+    if (value == "") {
+        displayError(email, "Veuillez indiquer votre email");
         emailError = false;
-    } else if (emailRegex.test(emailFields) === false) {
-        console.log("Email incorrect");
+    } else if (emailRegex.test(value) === false) {
+        displayError(
+            email,
+            "L'email est incomplet et/ou contient des caractères invalide"
+        );
         emailError = false;
     } else {
-        console.log("Email correct");
+        displayError(email, "", true);
         emailError = true;
     }
+}
 
-    // Validate birthdate
-    if (birthdateFields == "") {
-        console.log("Date vide");
+// Validate birthdate
+function birthdateChecker(value) {
+    if (value == "") {
+        displayError(birthdate, "Veuillez indiquer votre date de naissance");
         birthdateError = false;
-    } else if (birthdateRegex.test(birthdateFields) === false) {
-        console.log("Date incorrect");
+    } else if (birthdateRegex.test(value) === false) {
+        displayError(
+            birthdate,
+            "Veuillez indiquer une date de naissance valide"
+        );
         birthdateError = false;
     } else {
-        console.log("Date correct");
+        displayError(birthdate, "", true);
         birthdateError = true;
     }
+}
 
-    // Validate quantity
-    if (quantityFields == "") {
-        console.log("Quantité vide");
+// Validate quantity
+function quantityChecker(value) {
+    if (value == "") {
+        displayError(quantity, "Veuillez indiquer une quantité");
         quantityError = false;
-    } else if (quantityRegex.test(quantityFields) === false) {
-        console.log("Quantité incorrect");
+    } else if (quantityRegex.test(value) === false) {
+        displayError(quantity, "Veuillez indiquer une quantité valide");
         quantityError = false;
     } else {
-        console.log("Quantité correct");
+        displayError(quantity, "", true);
         quantityError = true;
     }
+}
 
-    // Validate city
-    if (locationFields == "") {
-        console.log("Lieux vide");
+// Validate city
+function cityChecker(value) {
+    if (!value.includes(true)) {
+        displayError(locationInput[0], "Veuillez indiquer un lieux de tournoi");
         locationError = false;
     } else {
-        console.log("Lieux sélectionné");
+        displayError(locationInput[0], "", true);
         locationError = true;
     }
+}
 
-    // Validate checkbox
-    if (checkboxFields == false) {
-        console.log("Veuillez cochez les CGV");
+// Validate checkbox
+function checkboxChecker(value) {
+    if (value == false) {
+        displayError(checkbox1, "Veuillez cocher les conditions d'utilisation pour valider le formulaire");
         checkboxError = false;
     } else {
-        console.log("CGV validé");
+        displayError(checkbox1, "", true);
         checkboxError = true;
     }
 }
 
-// Send the form
+// Loop the inputs and put the value in the Checker funtcion
+inputs.forEach((input) => {
+    input.addEventListener("input", (e) => {
+        switch (e.target.id) {
+            case "firstName":
+                firstNameChecker(e.target.value);
+                break;
+            case "lastName":
+                lastNameChecker(e.target.value);
+                break;
+            case "email":
+                emailChecker(e.target.value);
+                break;
+            case "birthdate":
+                birthdateChecker(e.target.value);
+                break;
+            case "quantity":
+                quantityChecker(e.target.value);
+                break;
+            case "checkbox1":
+                checkboxChecker(e.target.checked);
+                break;
+            default:
+                null;
+        }
+    });
+});
+
+// Send the form after the submit event
 form.addEventListener("submit", (e) => {
     e.preventDefault();
-    
+
     // Check if any of the error variable have a false type
     if (
         (firstNameError &&
@@ -155,8 +214,40 @@ form.addEventListener("submit", (e) => {
             locationError &&
             checkboxError) == false
     ) {
-        console.log("Formulaire refusé");
+        console.log("Formulaire refusé !");
     } else {
-        console.log("Formulaire envoyé sans refresh de la page");
+        console.log("Formulaire validé !");
     }
 });
+
+// Defining a function to validate the form
+function validate() {
+    inputs.forEach((input) => {
+        switch (input.id) {
+            case "firstName":
+                firstNameChecker(input.value);
+                break;
+            case "lastName":
+                lastNameChecker(input.value);
+                break;
+            case "email":
+                emailChecker(input.value);
+                break;
+            case "birthdate":
+                birthdateChecker(input.value);
+                break;
+            case "quantity":
+                quantityChecker(input.value);
+                break;
+            default:
+                null;
+        }
+    });
+
+    let radioArray = []
+
+    locationInput.forEach((input)=> {
+        radioArray.push(input.checked)
+        cityChecker(radioArray)
+    })
+}
