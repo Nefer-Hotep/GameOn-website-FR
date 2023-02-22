@@ -3,15 +3,16 @@ const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const form = document.querySelector("form");
+const modalBody = document.querySelector(".modal-body");
 
-// function editNav() {
-//     var x = document.getElementById("myTopnav");
-//     if (x.className === "topnav") {
-//         x.className += " responsive";
-//     } else {
-//         x.className = "topnav";
-//     }
-// }
+function editNav() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+}
 
 // -----MODAL-----
 // launch modal event
@@ -27,13 +28,31 @@ function closeModal() {
     modalbg.style.display = "none";
 }
 
+// create the modal after form
+function validationModal() {
+    const validMessage = document.createElement("p");
+    const closeModalButton = document.createElement("button")
+
+    form.style.display = "none";
+
+    modalBody.setAttribute("data-validation", true);
+    modalBody.appendChild(validMessage);
+    modalBody.appendChild(closeModalButton)
+
+    validMessage.setAttribute("class", "valid-message");
+    validMessage.textContent = "Merci pour votre inscription";
+
+    closeModalButton.setAttribute("class", "button btn-close")
+    closeModalButton.setAttribute("onclick", "closeModal()")
+    closeModalButton.textContent = "Fermer"
+}
+
 // ------FORM-------
 // Inputs
 const locationInput = document.querySelectorAll(`input[name="location"]`);
 const inputs = document.querySelectorAll(
     `input[type='text'], input[type='number'], input[type='email'], input[type='quantity'], input[type='checkbox'], input[type='date']`
 );
-
 
 // Create a function that define a template for error message
 function displayError(input, message, valid) {
@@ -164,7 +183,10 @@ function cityChecker(value) {
 // Validate checkbox
 function checkboxChecker(value) {
     if (value == false) {
-        displayError(checkbox1, "Veuillez cocher les conditions d'utilisation pour valider le formulaire");
+        displayError(
+            checkbox1,
+            "Veuillez cocher les conditions d'utilisation pour valider le formulaire"
+        );
         checkboxError = false;
     } else {
         displayError(checkbox1, "", true);
@@ -216,6 +238,7 @@ form.addEventListener("submit", (e) => {
     ) {
         console.log("Formulaire refusé !");
     } else {
+        validationModal();
         console.log("Formulaire validé !");
     }
 });
@@ -242,12 +265,12 @@ function validate() {
             default:
                 null;
         }
+
+        let radioArray = [];
+
+        locationInput.forEach((input) => {
+            radioArray.push(input.checked);
+            cityChecker(radioArray);
+        });
     });
-
-    let radioArray = []
-
-    locationInput.forEach((input)=> {
-        radioArray.push(input.checked)
-        cityChecker(radioArray)
-    })
 }
