@@ -5,6 +5,7 @@ const formData = document.querySelectorAll(".formData");
 const form = document.querySelector("form");
 const modalBody = document.querySelector(".modal-body");
 
+// Responsive
 function editNav() {
     var x = document.getElementById("myTopnav");
     if (x.className === "topnav") {
@@ -31,20 +32,20 @@ function closeModal() {
 // create the modal after form
 function validationModal() {
     const validMessage = document.createElement("p");
-    const closeModalButton = document.createElement("button")
+    const closeModalButton = document.createElement("button");
 
     form.style.display = "none";
 
     modalBody.setAttribute("data-validation", true);
     modalBody.appendChild(validMessage);
-    modalBody.appendChild(closeModalButton)
+    modalBody.appendChild(closeModalButton);
 
     validMessage.setAttribute("class", "valid-message");
     validMessage.textContent = "Merci pour votre inscription";
 
-    closeModalButton.setAttribute("class", "button btn-close")
-    closeModalButton.setAttribute("onclick", "closeModal()")
-    closeModalButton.textContent = "Fermer"
+    closeModalButton.setAttribute("class", "button modal-btn btn-close");
+    closeModalButton.setAttribute("onclick", "closeModal()");
+    closeModalButton.textContent = "Fermer";
 }
 
 // ------FORM-------
@@ -78,7 +79,8 @@ let firstNameError,
 // Differents style of regex inside variables
 const nameRegex = /^[a-zA-Z0-9_.-éëèïôÿ]*$/;
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-const birthdateRegex = /\d{4}-\d{2}-\d{2}/;
+const birthdateRegex =
+    /(200[0-4]|19[2-9]\d)\-(1[0-2]|0[1-9])\-(3[0-1]|[0-2]\d)/;
 const quantityRegex = /[0-9]{1,}/;
 
 // Validate firstName
@@ -222,6 +224,15 @@ inputs.forEach((input) => {
     });
 });
 
+let radioArray = [];
+
+locationInput.forEach((input) => {
+    input.addEventListener("input", () => {
+        radioArray.push(input.checked);
+        cityChecker(radioArray);
+    })
+});
+
 // Send the form after the submit event
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -245,6 +256,7 @@ form.addEventListener("submit", (e) => {
 
 // Defining a function to validate the form
 function validate() {
+    
     inputs.forEach((input) => {
         switch (input.id) {
             case "firstName":
@@ -265,12 +277,10 @@ function validate() {
             default:
                 null;
         }
+    });
 
-        let radioArray = [];
-
-        locationInput.forEach((input) => {
-            radioArray.push(input.checked);
-            cityChecker(radioArray);
-        });
+    locationInput.forEach((input) => {
+        radioArray.push(input.checked);
+        cityChecker(radioArray);
     });
 }
