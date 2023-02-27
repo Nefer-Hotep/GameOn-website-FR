@@ -196,7 +196,7 @@ function checkboxChecker(value) {
     }
 }
 
-// Loop the inputs and put the value in the Checker funtcion
+// Loop the inputs and put the value in the Checker function
 inputs.forEach((input) => {
     input.addEventListener("input", (e) => {
         switch (e.target.id) {
