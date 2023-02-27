@@ -3,15 +3,17 @@ const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const form = document.querySelector("form");
+const modalBody = document.querySelector(".modal-body");
 
-// function editNav() {
-//     var x = document.getElementById("myTopnav");
-//     if (x.className === "topnav") {
-//         x.className += " responsive";
-//     } else {
-//         x.className = "topnav";
-//     }
-// }
+// Responsive
+function editNav() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+}
 
 // -----MODAL-----
 // launch modal event
@@ -27,13 +29,31 @@ function closeModal() {
     modalbg.style.display = "none";
 }
 
+// create the modal after form
+function validationModal() {
+    const validMessage = document.createElement("p");
+    const closeModalButton = document.createElement("button");
+
+    form.style.display = "none";
+
+    modalBody.setAttribute("data-validation", true);
+    modalBody.appendChild(validMessage);
+    modalBody.appendChild(closeModalButton);
+
+    validMessage.setAttribute("class", "valid-message");
+    validMessage.textContent = "Merci pour votre inscription";
+
+    closeModalButton.setAttribute("class", "button modal-btn btn-close");
+    closeModalButton.setAttribute("onclick", "closeModal()");
+    closeModalButton.textContent = "Fermer";
+}
+
 // ------FORM-------
 // Inputs
 const locationInput = document.querySelectorAll(`input[name="location"]`);
 const inputs = document.querySelectorAll(
     `input[type='text'], input[type='number'], input[type='email'], input[type='quantity'], input[type='checkbox'], input[type='date']`
 );
-
 
 // Create a function that define a template for error message
 function displayError(input, message, valid) {
@@ -59,7 +79,8 @@ let firstNameError,
 // Differents style of regex inside variables
 const nameRegex = /^[a-zA-Z0-9_.-éëèïôÿ]*$/;
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-const birthdateRegex = /\d{4}-\d{2}-\d{2}/;
+const birthdateRegex =
+    /(200[0-4]|19[2-9]\d)\-(1[0-2]|0[1-9])\-(3[0-1]|[0-2]\d)/;
 const quantityRegex = /[0-9]{1,}/;
 
 // Validate firstName
@@ -164,7 +185,10 @@ function cityChecker(value) {
 // Validate checkbox
 function checkboxChecker(value) {
     if (value == false) {
-        displayError(checkbox1, "Veuillez cocher les conditions d'utilisation pour valider le formulaire");
+        displayError(
+            checkbox1,
+            "Veuillez cocher les conditions d'utilisation pour valider le formulaire"
+        );
         checkboxError = false;
     } else {
         displayError(checkbox1, "", true);
@@ -172,7 +196,7 @@ function checkboxChecker(value) {
     }
 }
 
-// Loop the inputs and put the value in the Checker funtcion
+// Loop the inputs and put the value in the Checker function
 inputs.forEach((input) => {
     input.addEventListener("input", (e) => {
         switch (e.target.id) {
@@ -200,6 +224,15 @@ inputs.forEach((input) => {
     });
 });
 
+let radioArray = [];
+
+locationInput.forEach((input) => {
+    input.addEventListener("input", () => {
+        radioArray.push(input.checked);
+        cityChecker(radioArray);
+    })
+});
+
 // Send the form after the submit event
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -216,12 +249,14 @@ form.addEventListener("submit", (e) => {
     ) {
         console.log("Formulaire refusé !");
     } else {
+        validationModal();
         console.log("Formulaire validé !");
     }
 });
 
 // Defining a function to validate the form
 function validate() {
+    
     inputs.forEach((input) => {
         switch (input.id) {
             case "firstName":
@@ -244,10 +279,8 @@ function validate() {
         }
     });
 
-    let radioArray = []
-
-    locationInput.forEach((input)=> {
-        radioArray.push(input.checked)
-        cityChecker(radioArray)
-    })
+    locationInput.forEach((input) => {
+        radioArray.push(input.checked);
+        cityChecker(radioArray);
+    });
 }
