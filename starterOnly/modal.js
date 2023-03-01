@@ -26,7 +26,18 @@ function launchModal() {
 
 // close modal form
 function closeModal() {
+    const validatedMessage = document.querySelector(".valid-message");
+    const closeModalValidated = document.querySelector(".btn-close")
+
     modalbg.style.display = "none";
+
+    if(validatedMessage) {
+        form.reset();
+        form.style.display = "initial";
+        validatedMessage.remove();
+        closeModalValidated.remove()
+        modalBody.setAttribute("data-validation", false)
+    }
 }
 
 // create the modal after form
@@ -78,7 +89,7 @@ let firstNameError,
 
 // Differents style of regex inside variables
 const nameRegex = /^[a-zA-Z0-9_.-éëèïôÿ]*$/;
-const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const emailRegex = /(^[a-z\d]+[\.\-\_]?[a-z\d]+)@([a-z\d]+[.\-]?[a-z\d]+)\.[a-z]+$/;
 const birthdateRegex =
     /(200[0-4]|19[2-9]\d)\-(1[0-2]|0[1-9])\-(3[0-1]|[0-2]\d)/;
 const quantityRegex = /[0-9]{1,}/;
@@ -230,7 +241,7 @@ locationInput.forEach((input) => {
     input.addEventListener("input", () => {
         radioArray.push(input.checked);
         cityChecker(radioArray);
-    })
+    });
 });
 
 // Send the form after the submit event
@@ -256,7 +267,6 @@ form.addEventListener("submit", (e) => {
 
 // Defining a function to validate the form
 function validate() {
-    
     inputs.forEach((input) => {
         switch (input.id) {
             case "firstName":
